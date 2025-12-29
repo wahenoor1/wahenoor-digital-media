@@ -92,18 +92,25 @@ export default function Offers() {
                             >
                                 <Card className="h-full bg-white/5 border-white/10 backdrop-blur-sm hover:bg-white/10 hover:border-white/20 transition-all">
                                     <CardHeader>
-                                        <div className="flex items-start justify-between mb-2">
-                                            <CardTitle className="text-xl text-white">{offer.campaign_name}</CardTitle>
-                                        </div>
-                                        <div className="flex flex-wrap gap-2">
-                                            <Badge className="bg-blue-500/20 text-blue-300 border-blue-500/30">
-                                                {offer.vertical}
-                                            </Badge>
-                                            {offer.sub_vertical && (
-                                                <Badge variant="outline" className="border-white/20 text-gray-300">
-                                                    {offer.sub_vertical}
-                                                </Badge>
+                                        <div className="flex items-start gap-4 mb-3">
+                                            {offer.campaign_logo && (
+                                                <div className="w-16 h-16 rounded-lg overflow-hidden border border-white/20 bg-white p-2 flex-shrink-0">
+                                                    <img src={offer.campaign_logo} alt={offer.campaign_name} className="w-full h-full object-contain" />
+                                                </div>
                                             )}
+                                            <div className="flex-1">
+                                                <CardTitle className="text-xl text-white mb-2">{offer.campaign_name}</CardTitle>
+                                                <div className="flex flex-wrap gap-2">
+                                                    <Badge className="bg-blue-500/20 text-blue-300 border-blue-500/30">
+                                                        {offer.vertical}
+                                                    </Badge>
+                                                    {offer.sub_vertical && (
+                                                        <Badge variant="outline" className="border-white/20 text-gray-300">
+                                                            {offer.sub_vertical}
+                                                        </Badge>
+                                                    )}
+                                                </div>
+                                            </div>
                                         </div>
                                     </CardHeader>
                                     <CardContent>
@@ -116,7 +123,13 @@ export default function Offers() {
                                                 <DollarSign className="w-4 h-4 text-green-400" />
                                                 <div>
                                                     <p className="text-xs text-gray-500">Payout</p>
-                                                    <p className="text-green-400 font-bold">{offer.payout_currency} {offer.payout}</p>
+                                                    <p className="text-green-400 font-bold">
+                                                        {offer.payout_type === 'revenue_share' ? (
+                                                            <>{offer.payout}% RevShare</>
+                                                        ) : (
+                                                            <>{offer.payout_currency} {offer.payout}</>
+                                                        )}
+                                                    </p>
                                                 </div>
                                             </div>
                                             

@@ -27,12 +27,15 @@ function AdminOffersContent() {
     const [editingOffer, setEditingOffer] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [filterVertical, setFilterVertical] = useState('all');
+    const [uploading, setUploading] = useState(false);
     const [formData, setFormData] = useState({
         campaign_name: '',
+        campaign_logo: '',
         vertical: '',
         sub_vertical: '',
         geo: '',
         kpi: '',
+        payout_type: 'fixed',
         payout: '',
         payout_currency: 'INR',
         platform: 'Both',
@@ -80,10 +83,12 @@ function AdminOffersContent() {
         setEditingOffer(null);
         setFormData({
             campaign_name: '',
+            campaign_logo: '',
             vertical: '',
             sub_vertical: '',
             geo: '',
             kpi: '',
+            payout_type: 'fixed',
             payout: '',
             payout_currency: 'INR',
             platform: 'Both',
@@ -92,6 +97,22 @@ function AdminOffersContent() {
             description: '',
             status: 'active'
         });
+    };
+
+    const handleFileUpload = async (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setUploading(true);
+        try {
+            const { file_url } = await base44.integrations.Core.UploadFile({ file });
+            setFormData(prev => ({ ...prev, campaign_logo: file_url }));
+            toast.success('Logo uploaded successfully!');
+        } catch (error) {
+            toast.error('Failed to upload logo');
+        } finally {
+            setUploading(false);
+        }
     };
 
     const handleEdit = (offer) => {
@@ -151,6 +172,31 @@ function AdminOffersContent() {
                         </CardHeader>
                         <CardContent>
                             <form onSubmit={handleSubmit} className="space-y-6">
+                                {/* Campaign Logo Upload */}
+                                <div className="space-y-2">
+                                    <Label>Campaign Logo</Label>
+                                    <div className="flex items-center gap-4">
+                                        <label className="cursor-pointer">
+                                            <div className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                                                <Upload className="w-4 h-4" />
+                                                <span>{uploading ? 'Uploading...' : 'Upload Logo'}</span>
+                                            </div>
+                                            <input
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={handleFileUpload}
+                                                className="hidden"
+                                                disabled={uploading}
+                                            />
+                                        </label>
+                                        {formData.campaign_logo && (
+                                            <div className="relative w-20 h-20 rounded-lg overflow-hidden border bg-white p-2">
+                                                <img src={formData.campaign_logo} alt="Logo Preview" className="w-full h-full object-contain" />
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+
                                 <div className="grid md:grid-cols-2 gap-6">
                                     <div className="space-y-2">
                                         <Label htmlFor="campaign_name">Campaign Name *</Label>
@@ -209,7 +255,25 @@ function AdminOffersContent() {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <Label htmlFor="payout">Payout *</Label>
+                                        <Label htmlFor="payout_type">Payout Type *</Label>
+                                        <Select
+                                            value={formData.payout_type}
+                                            onValueChange={(value) => setFormData(prev => ({ ...prev, payout_type: value }))}
+                                        >
+                                            <SelectTrigger>
+                                                <SelectValue />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="fixed">Fixed Payout</SelectItem>
+                                                <SelectItem value="revenue_share">Revenue Share (%)</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <Label htmlFor="payout">
+                                            {formData.payout_type === 'revenue_share' ? 'Revenue Share (%) *' : 'Payout Amount *'}
+                                        </Label>
                                         <div className="flex gap-2">
                                             <Input
                                                 id="payout"
@@ -219,20 +283,27 @@ function AdminOffersContent() {
                                                 onChange={(e) => setFormData(prev => ({ ...prev, payout: e.target.value }))}
                                                 required
                                                 className="flex-1"
+                                                placeholder={formData.payout_type === 'revenue_share' ? 'e.g., 30' : 'e.g., 500'}
                                             />
-                                            <Select
-                                                value={formData.payout_currency}
-                                                onValueChange={(value) => setFormData(prev => ({ ...prev, payout_currency: value }))}
-                                            >
-                                                <SelectTrigger className="w-24">
-                                                    <SelectValue />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectItem value="INR">INR</SelectItem>
-                                                    <SelectItem value="USD">USD</SelectItem>
-                                                    <SelectItem value="EUR">EUR</SelectItem>
-                                                </SelectContent>
-                                            </Select>
+                                            {formData.payout_type === 'fixed' ? (
+                                                <Select
+                                                    value={formData.payout_currency}
+                                                    onValueChange={(value) => setFormData(prev => ({ ...prev, payout_currency: value }))}
+                                                >
+                                                    <SelectTrigger className="w-24">
+                                                        <SelectValue />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="INR">INR</SelectItem>
+                                                        <SelectItem value="USD">USD</SelectItem>
+                                                        <SelectItem value="EUR">EUR</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                            ) : (
+                                                <div className="w-12 flex items-center justify-center text-gray-500 text-lg font-semibold">
+                                                    %
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
 
@@ -266,16 +337,20 @@ function AdminOffersContent() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label htmlFor="traffic_sources">Traffic Sources (comma separated)</Label>
-                                    <Input
+                                    <Label htmlFor="traffic_sources">Allowed Traffic Sources</Label>
+                                    <Textarea
                                         id="traffic_sources"
                                         value={formData.traffic_sources.join(', ')}
                                         onChange={(e) => setFormData(prev => ({ 
                                             ...prev, 
                                             traffic_sources: e.target.value.split(',').map(s => s.trim()).filter(Boolean)
                                         }))}
-                                        placeholder="e.g., Facebook, Google Ads, Email"
+                                        placeholder="Enter allowed traffic sources separated by commas. E.g., Facebook Ads, Google Ads, Email Marketing, Native Ads, Push Notifications, SEO, Social Media, Influencer Marketing, YouTube, TikTok"
+                                        rows={3}
                                     />
+                                    <p className="text-xs text-gray-500">
+                                        Common sources: Facebook Ads, Google Ads, Email, Native Ads, Push Notifications, SEO, Social Media, Influencer, YouTube, TikTok, Display Ads
+                                    </p>
                                 </div>
 
                                 <div className="space-y-2">
@@ -364,8 +439,13 @@ function AdminOffersContent() {
                                 <CardContent className="p-6">
                                     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                                         <div className="flex-1">
-                                            <div className="flex items-start justify-between mb-3">
-                                                <div>
+                                            <div className="flex items-start gap-4 mb-3">
+                                                {offer.campaign_logo && (
+                                                    <div className="w-16 h-16 rounded-lg overflow-hidden border bg-white p-2 flex-shrink-0">
+                                                        <img src={offer.campaign_logo} alt={offer.campaign_name} className="w-full h-full object-contain" />
+                                                    </div>
+                                                )}
+                                                <div className="flex-1">
                                                     <h3 className="text-xl font-semibold text-gray-900 mb-2">{offer.campaign_name}</h3>
                                                     <div className="flex flex-wrap gap-2 mb-3">
                                                         <Badge className="bg-blue-100 text-blue-800">{offer.vertical}</Badge>
@@ -386,7 +466,16 @@ function AdminOffersContent() {
                                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                                                 <div>
                                                     <span className="text-gray-500">Payout:</span>
-                                                    <p className="font-semibold text-green-600">{offer.payout_currency} {offer.payout}</p>
+                                                    <p className="font-semibold text-green-600">
+                                                        {offer.payout_type === 'revenue_share' ? (
+                                                            <>{offer.payout}%</>
+                                                        ) : (
+                                                            <>{offer.payout_currency} {offer.payout}</>
+                                                        )}
+                                                    </p>
+                                                    <p className="text-xs text-gray-500">
+                                                        {offer.payout_type === 'revenue_share' ? 'Revenue Share' : 'Fixed'}
+                                                    </p>
                                                 </div>
                                                 {offer.geo && (
                                                     <div>

@@ -107,6 +107,12 @@ export default function Footer() {
                                     info@wahenoormedia.com
                                 </a>
                             </li>
+                            <li className="pt-4 border-t border-white/10">
+                                <a href="/AdminOffers" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 text-purple-300 hover:bg-purple-500/30 transition-all text-sm">
+                                    <ExternalLink className="w-4 h-4" />
+                                    Admin Login
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </div>

@@ -1,57 +1,16 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Shield, Leaf, Heart, Sun, Newspaper, ExternalLink } from 'lucide-react';
-import { Button } from "@/components/ui/button";
-
-const products = [
-    {
-        icon: Shield,
-        title: 'PolicyWala',
-        category: 'Insurance',
-        description: 'Compare and buy insurance policies with best deals and instant approval.',
-        url: 'https://policywala.help',
-        color: 'from-blue-500 to-indigo-500',
-        image: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=400&h=300&fit=crop'
-    },
-    {
-        icon: Leaf,
-        title: 'NoorHerbs',
-        category: 'E-commerce Herbals',
-        description: 'Premium herbal products for natural wellness and healthy living.',
-        url: 'https://noorherbs.com',
-        color: 'from-green-500 to-emerald-500',
-        image: 'https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=400&h=300&fit=crop'
-    },
-    {
-        icon: Heart,
-        title: 'Ekam Matchmaker',
-        category: 'Matrimonial',
-        description: 'Find your perfect life partner with our trusted matchmaking service.',
-        url: 'https://ekammatchmaker.com',
-        color: 'from-pink-500 to-rose-500',
-        image: 'https://images.unsplash.com/photo-1529634597503-139d3726fed5?w=400&h=300&fit=crop'
-    },
-    {
-        icon: Sun,
-        title: 'Alt Energy',
-        category: 'Solar',
-        description: 'Sustainable solar energy solutions for homes and businesses.',
-        url: 'https://altenergy.com',
-        color: 'from-yellow-500 to-orange-500',
-        image: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=400&h=300&fit=crop'
-    },
-    {
-        icon: Newspaper,
-        title: 'Lok Prakash',
-        category: 'News',
-        description: 'Stay updated with the latest news and happenings around you.',
-        url: 'https://lokprakash.com',
-        color: 'from-purple-500 to-violet-500',
-        image: 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=400&h=300&fit=crop'
-    }
-];
+import { Shield, Leaf, Heart, Sun, Newspaper, ExternalLink, Package } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { base44 } from '@/api/base44Client';
 
 export default function ProductsSection() {
+    const { data: products = [], isLoading } = useQuery({
+        queryKey: ['products'],
+        queryFn: () => base44.entities.Product.filter({ status: 'active' }, '-created_date'),
+    });
+
+    if (isLoading || products.length === 0) return null;
     return (
         <section id="products" className="py-24 bg-[#0F172A] relative overflow-hidden">
             <div className="absolute inset-0">
@@ -80,7 +39,10 @@ export default function ProductsSection() {
                 </motion.div>
 
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {products.map((product, index) => (
+                    {products.map((product, index) => {
+                        const iconMap = { Shield, Leaf, Heart, Sun, Newspaper, Package };
+                        const IconComponent = iconMap[product.icon_name] || Shield;
+                        return (
                         <motion.a
                             key={index}
                             href={product.url}
@@ -96,12 +58,12 @@ export default function ProductsSection() {
                                 {/* Image */}
                                 <div className="relative h-48 overflow-hidden">
                                     <img 
-                                        src={product.image}
-                                        alt={product.title}
+                                        src={product.image || 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop'}
+                                        alt={product.name}
                                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A] via-[#0F172A]/50 to-transparent" />
-                                    <div className={`absolute top-4 right-4 px-3 py-1 rounded-full bg-gradient-to-r ${product.color} text-white text-xs font-medium`}>
+                                    <div className={`absolute top-4 right-4 px-3 py-1 rounded-full bg-gradient-to-r ${product.color || 'from-blue-500 to-indigo-500'} text-white text-xs font-medium`}>
                                         {product.category}
                                     </div>
                                 </div>
@@ -109,10 +71,10 @@ export default function ProductsSection() {
                                 {/* Content */}
                                 <div className="p-6">
                                     <div className="flex items-center gap-3 mb-3">
-                                        <div className={`w-10 h-10 rounded-xl bg-gradient-to-r ${product.color} flex items-center justify-center`}>
-                                            <product.icon className="w-5 h-5 text-white" />
+                                        <div className={`w-10 h-10 rounded-xl bg-gradient-to-r ${product.color || 'from-blue-500 to-indigo-500'} flex items-center justify-center`}>
+                                            <IconComponent className="w-5 h-5 text-white" />
                                         </div>
-                                        <h3 className="text-xl font-bold text-white">{product.title}</h3>
+                                        <h3 className="text-xl font-bold text-white">{product.name}</h3>
                                     </div>
                                     <p className="text-gray-400 text-sm leading-relaxed mb-4">{product.description}</p>
                                     <div className="flex items-center text-blue-400 group-hover:text-blue-300 transition-colors">
@@ -122,7 +84,8 @@ export default function ProductsSection() {
                                 </div>
                             </div>
                         </motion.a>
-                    ))}
+                        );
+                    })}
                 </div>
             </div>
         </section>

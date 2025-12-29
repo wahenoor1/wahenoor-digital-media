@@ -54,33 +54,35 @@ export default function GallerySection() {
                 </motion.div>
 
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    {gallery.map((item, index) => (
-                        <motion.div
-                            key={item.id}
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            whileInView={{ opacity: 1, scale: 1 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.4, delay: index * 0.05 }}
-                            className="group relative aspect-square rounded-2xl overflow-hidden cursor-pointer"
-                        >
-                            <img 
-                                src={item.image_url}
-                                alt={item.title}
-                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                            
-                            <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                                <h3 className="text-white font-semibold text-sm mb-1">{item.title}</h3>
-                                {item.event_date && (
-                                    <div className="flex items-center gap-1 text-gray-300 text-xs">
-                                        <Calendar className="w-3 h-3" />
-                                        {format(new Date(item.event_date), 'MMM d, yyyy')}
-                                    </div>
-                                )}
-                            </div>
-                        </motion.div>
-                    ))}
+                    {gallery.flatMap((item) => 
+                        (item.images || [item.image_url]).slice(0, 8).map((img, imgIndex) => (
+                            <motion.div
+                                key={`${item.id}-${imgIndex}`}
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                whileInView={{ opacity: 1, scale: 1 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.4, delay: imgIndex * 0.05 }}
+                                className="group relative aspect-square rounded-2xl overflow-hidden cursor-pointer"
+                            >
+                                <img 
+                                    src={img}
+                                    alt={item.title}
+                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                
+                                <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                                    <h3 className="text-white font-semibold text-sm mb-1">{item.title}</h3>
+                                    {item.event_date && (
+                                        <div className="flex items-center gap-1 text-gray-300 text-xs">
+                                            <Calendar className="w-3 h-3" />
+                                            {format(new Date(item.event_date), 'MMM d, yyyy')}
+                                        </div>
+                                    )}
+                                </div>
+                            </motion.div>
+                        ))
+                    )}
                 </div>
             </div>
         </section>

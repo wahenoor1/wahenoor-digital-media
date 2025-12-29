@@ -89,11 +89,24 @@ export default function Footer() {
                         <ul className="space-y-4">
                             <li className="flex items-start gap-3">
                                 <MapPin className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
-                                <span className="text-gray-400 text-sm">
-                                    564, New Gobind Nagar,<br />
-                                    Chaura Bazar, Sultanwind Road,<br />
-                                    Amritsar
-                                </span>
+                                <div className="text-gray-400 text-sm space-y-3">
+                                    <div>
+                                        <p className="text-blue-300 font-medium mb-1">India</p>
+                                        <p>564, New Gobind Nagar,<br />
+                                        Chaura Bazar, Sultanwind Road,<br />
+                                        Amritsar, Punjab</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-blue-300 font-medium mb-1">USA</p>
+                                        <p>1004 Sierra Madre Dr, Apt C<br />
+                                        Greenwood, IN 46142, USA</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-blue-300 font-medium mb-1">Australia</p>
+                                        <p>35 Giovanni Drive<br />
+                                        Angle Vale SA 5117</p>
+                                    </div>
+                                </div>
                             </li>
                             <li>
                                 <a href="tel:+917009039292" className="flex items-center gap-3 text-gray-400 hover:text-blue-400 transition-colors text-sm">

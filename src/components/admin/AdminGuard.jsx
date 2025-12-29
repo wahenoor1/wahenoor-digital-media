@@ -154,6 +154,12 @@ export default function AdminGuard({ children }) {
                             Manage Gallery
                         </a>
                         <a
+                            href="/AdminProducts"
+                            className="px-6 py-4 text-sm font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-colors whitespace-nowrap border-b-2 border-transparent hover:border-blue-500"
+                        >
+                            Manage Products
+                        </a>
+                        <a
                             href="/"
                             className="px-6 py-4 text-sm font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-colors whitespace-nowrap border-b-2 border-transparent hover:border-blue-500"
                         >

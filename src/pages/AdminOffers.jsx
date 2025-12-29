@@ -337,20 +337,32 @@ function AdminOffersContent() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label htmlFor="traffic_sources">Allowed Traffic Sources</Label>
-                                    <Textarea
-                                        id="traffic_sources"
-                                        value={formData.traffic_sources.join(', ')}
-                                        onChange={(e) => setFormData(prev => ({ 
-                                            ...prev, 
-                                            traffic_sources: e.target.value.split(',').map(s => s.trim()).filter(Boolean)
-                                        }))}
-                                        placeholder="Enter allowed traffic sources separated by commas. E.g., Facebook Ads, Google Ads, Email Marketing, Native Ads, Push Notifications, SEO, Social Media, Influencer Marketing, YouTube, TikTok"
-                                        rows={3}
-                                    />
-                                    <p className="text-xs text-gray-500">
-                                        Common sources: Facebook Ads, Google Ads, Email, Native Ads, Push Notifications, SEO, Social Media, Influencer, YouTube, TikTok, Display Ads
-                                    </p>
+                                    <Label>Allowed Traffic Sources</Label>
+                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3 p-4 border border-gray-300 rounded-lg bg-gray-50">
+                                        {['Meta', 'Google', 'YouTube', 'TikTok', 'DSP', 'Native', 'Push', 'Pop', 'Display', 'Incentive', 'Email', 'Others'].map((source) => (
+                                            <label key={source} className="flex items-center gap-2 cursor-pointer">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={formData.traffic_sources.includes(source)}
+                                                    onChange={(e) => {
+                                                        if (e.target.checked) {
+                                                            setFormData(prev => ({
+                                                                ...prev,
+                                                                traffic_sources: [...prev.traffic_sources, source]
+                                                            }));
+                                                        } else {
+                                                            setFormData(prev => ({
+                                                                ...prev,
+                                                                traffic_sources: prev.traffic_sources.filter(s => s !== source)
+                                                            }));
+                                                        }
+                                                    }}
+                                                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                                                />
+                                                <span className="text-sm text-gray-700">{source}</span>
+                                            </label>
+                                        ))}
+                                    </div>
                                 </div>
 
                                 <div className="space-y-2">

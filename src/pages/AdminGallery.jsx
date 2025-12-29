@@ -26,7 +26,7 @@ function AdminGalleryContent() {
     const [formData, setFormData] = useState({
         title: '',
         description: '',
-        image_url: '',
+        images: [],
         event_date: '',
         category: 'other'
     });
@@ -43,7 +43,7 @@ function AdminGalleryContent() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['gallery'] });
             setShowForm(false);
-            setFormData({ title: '', description: '', image_url: '', event_date: '', category: 'other' });
+            setFormData({ title: '', description: '', images: [], event_date: '', category: 'other' });
             toast.success('Gallery item added successfully!');
         },
     });
@@ -57,25 +57,45 @@ function AdminGalleryContent() {
     });
 
     const handleFileUpload = async (e) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
+        const files = Array.from(e.target.files || []);
+        if (files.length === 0) return;
+
+        if (formData.images.length + files.length > 10) {
+            toast.error('Maximum 10 images allowed per event');
+            return;
+        }
 
         setUploading(true);
         try {
-            const { file_url } = await base44.integrations.Core.UploadFile({ file });
-            setFormData(prev => ({ ...prev, image_url: file_url }));
-            toast.success('Image uploaded successfully!');
+            const uploadPromises = files.map(file => 
+                base44.integrations.Core.UploadFile({ file })
+            );
+            const results = await Promise.all(uploadPromises);
+            const newImageUrls = results.map(r => r.file_url);
+            
+            setFormData(prev => ({ 
+                ...prev, 
+                images: [...prev.images, ...newImageUrls]
+            }));
+            toast.success(`${files.length} image(s) uploaded successfully!`);
         } catch (error) {
-            toast.error('Failed to upload image');
+            toast.error('Failed to upload images');
         } finally {
             setUploading(false);
         }
     };
 
+    const removeImage = (index) => {
+        setFormData(prev => ({
+            ...prev,
+            images: prev.images.filter((_, i) => i !== index)
+        }));
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!formData.title || !formData.image_url) {
-            toast.error('Please fill in required fields');
+        if (!formData.title || formData.images.length === 0) {
+            toast.error('Please add at least one image');
             return;
         }
         createMutation.mutate(formData);
@@ -160,24 +180,37 @@ function AdminGalleryContent() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label>Image *</Label>
-                                    <div className="flex items-center gap-4">
+                                    <Label>Images * (Up to 10 images)</Label>
+                                    <div className="space-y-4">
                                         <label className="cursor-pointer">
-                                            <div className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                                            <div className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 w-fit">
                                                 <Upload className="w-4 h-4" />
-                                                <span>{uploading ? 'Uploading...' : 'Upload Image'}</span>
+                                                <span>{uploading ? 'Uploading...' : `Upload Images (${formData.images.length}/10)`}</span>
                                             </div>
                                             <input
                                                 type="file"
                                                 accept="image/*"
+                                                multiple
                                                 onChange={handleFileUpload}
                                                 className="hidden"
-                                                disabled={uploading}
+                                                disabled={uploading || formData.images.length >= 10}
                                             />
                                         </label>
-                                        {formData.image_url && (
-                                            <div className="relative w-24 h-24 rounded-lg overflow-hidden border">
-                                                <img src={formData.image_url} alt="Preview" className="w-full h-full object-cover" />
+                                        
+                                        {formData.images.length > 0 && (
+                                            <div className="grid grid-cols-5 gap-3">
+                                                {formData.images.map((img, index) => (
+                                                    <div key={index} className="relative group">
+                                                        <img src={img} alt={`Preview ${index + 1}`} className="w-full h-24 object-cover rounded-lg border" />
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => removeImage(index)}
+                                                            className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                                                        >
+                                                            <X className="w-4 h-4" />
+                                                        </button>
+                                                    </div>
+                                                ))}
                                             </div>
                                         )}
                                     </div>
@@ -210,12 +243,17 @@ function AdminGalleryContent() {
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                         {gallery.map((item) => (
                             <Card key={item.id} className="group relative overflow-hidden">
-                                <div className="aspect-square">
+                                <div className="aspect-square relative">
                                     <img 
-                                        src={item.image_url} 
+                                        src={item.images?.[0] || item.image_url} 
                                         alt={item.title}
                                         className="w-full h-full object-cover"
                                     />
+                                    {item.images?.length > 1 && (
+                                        <div className="absolute bottom-2 right-2 px-2 py-1 bg-black/70 text-white text-xs rounded-full">
+                                            +{item.images.length - 1} more
+                                        </div>
+                                    )}
                                 </div>
                                 <CardContent className="p-3">
                                     <h3 className="font-semibold text-sm mb-1 truncate">{item.title}</h3>

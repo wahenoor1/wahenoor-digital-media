@@ -11,9 +11,9 @@ export default function HeroSection() {
                 <img 
                     src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69526dd993415b206c8c9333/8a0639beb_images.jpg"
                     alt="Background"
-                    className="w-full h-full object-cover opacity-[0.08]"
+                    className="w-full h-full object-cover opacity-20"
                 />
-                <div className="absolute inset-0 bg-gradient-to-br from-[#0A1628]/90 via-[#0F172A]/85 to-[#1E1B4B]/90" />
+                <div className="absolute inset-0 bg-gradient-to-br from-[#0A1628]/70 via-[#0F172A]/75 to-[#1E1B4B]/70" />
             </div>
 
             {/* Animated background elements */}

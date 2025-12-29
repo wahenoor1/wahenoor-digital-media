@@ -6,6 +6,7 @@ import ClientCarousel from '@/components/home/ClientCarousel';
 import VideoSection from '@/components/home/VideoSection';
 import ServicesSection from '@/components/home/ServicesSection';
 import ProductsSection from '@/components/home/ProductsSection';
+import GallerySection from '@/components/home/GallerySection';
 import ContactSection from '@/components/home/ContactSection';
 import Footer from '@/components/home/Footer';
 
@@ -19,6 +20,7 @@ export default function Home() {
             <VideoSection />
             <ServicesSection />
             <ProductsSection />
+            <GallerySection />
             <ContactSection />
             <Footer />
         </div>

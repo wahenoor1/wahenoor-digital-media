@@ -6,12 +6,11 @@ import { Menu, X, ExternalLink } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const navLinks = [
-    { name: 'Home', href: '#hero' },
-    { name: 'Advertiser', href: '#advertiser' },
-    { name: 'Publisher', href: '#publisher' },
+    { name: 'Home', href: '#hero', page: 'Home' },
+    { name: 'Offers', page: 'Offers' },
     { name: 'Categories', href: '#categories' },
     { name: 'Services', href: '#services' },
-    { name: 'Products', href: '#products' },
+    { name: 'Gallery', href: '#gallery' },
     { name: 'Contact', href: '#contact' }
 ];
 
@@ -53,14 +52,24 @@ export default function Layout({ children }) {
 
                         {/* Desktop Navigation */}
                         <div className="hidden lg:flex items-center gap-8">
-                            {navLinks.slice(0, 5).map((link, index) => (
-                                <button
-                                    key={index}
-                                    onClick={() => scrollToSection(link.href)}
-                                    className="text-gray-300 hover:text-white transition-colors text-sm font-medium"
-                                >
-                                    {link.name}
-                                </button>
+                            {navLinks.map((link, index) => (
+                                link.page ? (
+                                    <Link
+                                        key={index}
+                                        to={createPageUrl(link.page)}
+                                        className="text-gray-300 hover:text-white transition-colors text-sm font-medium"
+                                    >
+                                        {link.name}
+                                    </Link>
+                                ) : (
+                                    <button
+                                        key={index}
+                                        onClick={() => scrollToSection(link.href)}
+                                        className="text-gray-300 hover:text-white transition-colors text-sm font-medium"
+                                    >
+                                        {link.name}
+                                    </button>
+                                )
                             ))}
                         </div>
 
@@ -99,13 +108,24 @@ export default function Layout({ children }) {
                         >
                             <div className="px-4 py-6 space-y-4">
                                 {navLinks.map((link, index) => (
-                                    <button
-                                        key={index}
-                                        onClick={() => scrollToSection(link.href)}
-                                        className="block w-full text-left text-gray-300 hover:text-white transition-colors py-2 text-lg"
-                                    >
-                                        {link.name}
-                                    </button>
+                                    link.page ? (
+                                        <Link
+                                            key={index}
+                                            to={createPageUrl(link.page)}
+                                            className="block w-full text-left text-gray-300 hover:text-white transition-colors py-2 text-lg"
+                                            onClick={() => setIsMobileMenuOpen(false)}
+                                        >
+                                            {link.name}
+                                        </Link>
+                                    ) : (
+                                        <button
+                                            key={index}
+                                            onClick={() => scrollToSection(link.href)}
+                                            className="block w-full text-left text-gray-300 hover:text-white transition-colors py-2 text-lg"
+                                        >
+                                            {link.name}
+                                        </button>
+                                    )
                                 ))}
                                 <a
                                     href="https://wahenoor.offer18.com/m/login"

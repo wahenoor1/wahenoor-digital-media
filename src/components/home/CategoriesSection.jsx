@@ -1,4 +1,6 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
 import { 
     FileText, ShoppingCart, Download, Eye, 
@@ -60,13 +62,15 @@ export default function CategoriesSection() {
                             transition={{ duration: 0.4, delay: index * 0.05 }}
                             className="group cursor-pointer"
                         >
-                            <div className="relative p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm hover:bg-white/10 hover:border-white/20 transition-all duration-300 h-full">
-                                <div className={`w-12 h-12 rounded-xl bg-gradient-to-r ${category.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                                    <category.icon className="w-6 h-6 text-white" />
+                            <Link to={createPageUrl('Offers')}>
+                                <div className="relative p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm hover:bg-white/10 hover:border-white/20 transition-all duration-300 h-full">
+                                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-r ${category.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                                        <category.icon className="w-6 h-6 text-white" />
+                                    </div>
+                                    <h3 className="text-white font-semibold text-lg mb-1">{category.name}</h3>
+                                    <p className="text-gray-500 text-sm">{category.label}</p>
                                 </div>
-                                <h3 className="text-white font-semibold text-lg mb-1">{category.name}</h3>
-                                <p className="text-gray-500 text-sm">{category.label}</p>
-                            </div>
+                            </Link>
                         </motion.div>
                     ))}
                 </div>

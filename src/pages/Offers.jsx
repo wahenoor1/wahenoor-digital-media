@@ -14,6 +14,8 @@ const verticals = ['CPL', 'CPA', 'CPS', 'CPD', 'CPM', 'Health Insurance', 'Home 
 export default function Offers() {
     const [searchTerm, setSearchTerm] = useState('');
     const [filterVertical, setFilterVertical] = useState('all');
+    const [filterGeo, setFilterGeo] = useState('all');
+    const [filterPlatform, setFilterPlatform] = useState('all');
 
     const { data: offers = [], isLoading } = useQuery({
         queryKey: ['offers'],
@@ -24,8 +26,12 @@ export default function Offers() {
         const matchesSearch = offer.campaign_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                             offer.sub_vertical?.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesVertical = filterVertical === 'all' || offer.vertical === filterVertical;
-        return matchesSearch && matchesVertical;
+        const matchesGeo = filterGeo === 'all' || offer.geo?.toLowerCase().includes(filterGeo.toLowerCase());
+        const matchesPlatform = filterPlatform === 'all' || offer.platform === filterPlatform;
+        return matchesSearch && matchesVertical && matchesGeo && matchesPlatform;
     });
+
+    const uniqueGeos = [...new Set(offers.map(o => o.geo).filter(Boolean))].sort();
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-[#0A1628] to-[#0F172A] py-24">
@@ -48,7 +54,7 @@ export default function Offers() {
                 {/* Filters */}
                 <Card className="mb-8 bg-white/5 border-white/10 backdrop-blur-sm">
                     <CardContent className="p-6">
-                        <div className="flex flex-col sm:flex-row gap-4">
+                        <div className="grid gap-4">
                             <div className="flex-1 relative">
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                                 <Input
@@ -58,17 +64,43 @@ export default function Offers() {
                                     className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-gray-400"
                                 />
                             </div>
-                            <Select value={filterVertical} onValueChange={setFilterVertical}>
-                                <SelectTrigger className="w-full sm:w-48 bg-white/10 border-white/20 text-white">
-                                    <SelectValue placeholder="All Verticals" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="all">All Verticals</SelectItem>
-                                    {verticals.map(v => (
-                                        <SelectItem key={v} value={v}>{v}</SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                <Select value={filterVertical} onValueChange={setFilterVertical}>
+                                    <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                                        <SelectValue placeholder="All Verticals" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">All Verticals</SelectItem>
+                                        {verticals.map(v => (
+                                            <SelectItem key={v} value={v}>{v}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                
+                                <Select value={filterGeo} onValueChange={setFilterGeo}>
+                                    <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                                        <SelectValue placeholder="All Geographies" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">All Geographies</SelectItem>
+                                        {uniqueGeos.map(geo => (
+                                            <SelectItem key={geo} value={geo}>{geo}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                
+                                <Select value={filterPlatform} onValueChange={setFilterPlatform}>
+                                    <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                                        <SelectValue placeholder="All Devices" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">All Devices</SelectItem>
+                                        <SelectItem value="Mobile">Mobile</SelectItem>
+                                        <SelectItem value="Web">Web</SelectItem>
+                                        <SelectItem value="Both">Both</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
                         </div>
                     </CardContent>
                 </Card>

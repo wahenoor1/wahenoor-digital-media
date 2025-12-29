@@ -10,8 +10,17 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, Trash2, Upload, X, Calendar, Image as ImageIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
+import AdminGuard from '@/components/admin/AdminGuard';
 
 export default function AdminGallery() {
+    return (
+        <AdminGuard>
+            <AdminGalleryContent />
+        </AdminGuard>
+    );
+}
+
+function AdminGalleryContent() {
     const [showForm, setShowForm] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [formData, setFormData] = useState({

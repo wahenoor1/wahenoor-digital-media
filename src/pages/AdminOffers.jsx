@@ -10,10 +10,19 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Plus, X, Pencil, Trash2, Search, TrendingUp } from 'lucide-react';
 import { toast } from 'sonner';
+import AdminGuard from '@/components/admin/AdminGuard';
 
 const verticals = ['CPL', 'CPA', 'CPS', 'CPD', 'CPM', 'Health Insurance', 'Home Improvement', 'Fintech', 'Sweepstakes', 'Crypto', 'AI'];
 
 export default function AdminOffers() {
+    return (
+        <AdminGuard>
+            <AdminOffersContent />
+        </AdminGuard>
+    );
+}
+
+function AdminOffersContent() {
     const [showForm, setShowForm] = useState(false);
     const [editingOffer, setEditingOffer] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');

@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Plus, X, Pencil, Trash2, Search, TrendingUp } from 'lucide-react';
+import { Plus, X, Pencil, Trash2, Search, TrendingUp, Upload } from 'lucide-react';
 import { toast } from 'sonner';
 import AdminGuard from '@/components/admin/AdminGuard';
 

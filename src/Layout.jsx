@@ -4,6 +4,7 @@ import { createPageUrl } from './utils';
 import { Button } from "@/components/ui/button";
 import { Menu, X, ExternalLink } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import ScrollToTop from './components/ScrollToTop';
 
 const navLinks = [
     { name: 'Home', href: '#hero', page: 'Home' },
@@ -36,6 +37,7 @@ export default function Layout({ children }) {
 
     return (
         <div className="min-h-screen bg-[#0A1628]">
+            <ScrollToTop />
             {/* Navigation */}
             <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
                 isScrolled ? 'bg-[#0A1628]/95 backdrop-blur-lg border-b border-white/10 shadow-lg' : 'bg-transparent'

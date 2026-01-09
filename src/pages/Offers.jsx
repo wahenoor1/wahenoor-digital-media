@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, TrendingUp, Globe, Smartphone, DollarSign, Target, ExternalLink } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Search, TrendingUp, Globe, Smartphone, DollarSign, Target, ExternalLink, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const verticals = ['CPL', 'CPA', 'CPS', 'CPD', 'CPM', 'Health Insurance', 'Home Improvement', 'Fintech', 'Sweepstakes', 'Crypto', 'AI'];
@@ -16,6 +17,7 @@ export default function Offers() {
     const [filterVertical, setFilterVertical] = useState('all');
     const [filterGeo, setFilterGeo] = useState('all');
     const [filterPlatform, setFilterPlatform] = useState('all');
+    const [selectedOffer, setSelectedOffer] = useState(null);
 
     const { data: offers = [], isLoading } = useQuery({
         queryKey: ['offers'],
@@ -105,7 +107,7 @@ export default function Offers() {
                     </CardContent>
                 </Card>
 
-                {/* Offers Grid */}
+                {/* Offers List */}
                 {isLoading ? (
                     <div className="text-center py-12 text-gray-400">Loading offers...</div>
                 ) : filteredOffers.length === 0 ? (
@@ -114,117 +116,207 @@ export default function Offers() {
                         <p className="text-gray-400 mb-4">No offers found</p>
                     </Card>
                 ) : (
-                    <div className="grid md:grid-cols-2 gap-6">
-                        {filteredOffers.map((offer, index) => (
-                            <motion.div
-                                key={offer.id}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.4, delay: index * 0.05 }}
-                            >
-                                <Card className="h-full bg-white/5 border-white/10 backdrop-blur-sm hover:bg-white/10 hover:border-white/20 transition-all">
-                                    <CardHeader>
-                                        <div className="flex items-start gap-4 mb-3">
-                                            {offer.campaign_logo && (
-                                                <div className="w-16 h-16 rounded-lg overflow-hidden border border-white/20 bg-white p-2 flex-shrink-0">
-                                                    <img src={offer.campaign_logo} alt={offer.campaign_name} className="w-full h-full object-contain" />
-                                                </div>
-                                            )}
-                                            <div className="flex-1">
-                                                <CardTitle className="text-xl text-white mb-2">{offer.campaign_name}</CardTitle>
-                                                <div className="flex flex-wrap gap-2">
-                                                    <Badge className="bg-blue-500/20 text-blue-300 border-blue-500/30">
-                                                        {offer.vertical}
-                                                    </Badge>
-                                                    {offer.sub_vertical && (
-                                                        <Badge variant="outline" className="border-white/20 text-gray-300">
-                                                            {offer.sub_vertical}
-                                                        </Badge>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </CardHeader>
-                                    <CardContent>
-                                        {offer.description && (
-                                            <p className="text-gray-400 text-sm mb-4">{offer.description}</p>
-                                        )}
-                                        
-                                        <div className="grid grid-cols-2 gap-4 mb-4">
-                                            <div className="flex items-center gap-2">
-                                                <DollarSign className="w-4 h-4 text-green-400" />
-                                                <div>
-                                                    <p className="text-xs text-gray-500">Payout</p>
-                                                    <p className="text-green-400 font-bold">
-                                                        {offer.payout_type === 'revenue_share' ? (
-                                                            <>{offer.payout}% RevShare</>
-                                                        ) : (
-                                                            <>{offer.payout_currency} {offer.payout}</>
-                                                        )}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            
-                                            {offer.geo && (
-                                                <div className="flex items-center gap-2">
-                                                    <Globe className="w-4 h-4 text-blue-400" />
-                                                    <div>
-                                                        <p className="text-xs text-gray-500">Geography</p>
-                                                        <p className="text-gray-300 text-sm">{offer.geo}</p>
-                                                    </div>
-                                                </div>
-                                            )}
-                                            
-                                            {offer.platform && (
-                                                <div className="flex items-center gap-2">
-                                                    <Smartphone className="w-4 h-4 text-purple-400" />
-                                                    <div>
-                                                        <p className="text-xs text-gray-500">Platform</p>
-                                                        <p className="text-gray-300 text-sm">{offer.platform}</p>
-                                                    </div>
-                                                </div>
-                                            )}
-                                            
-                                            {offer.kpi && (
-                                                <div className="flex items-center gap-2">
-                                                    <Target className="w-4 h-4 text-orange-400" />
-                                                    <div>
-                                                        <p className="text-xs text-gray-500">KPI</p>
-                                                        <p className="text-gray-300 text-sm">{offer.kpi}</p>
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
-
-                                        {offer.traffic_sources && offer.traffic_sources.length > 0 && (
-                                            <div className="mb-4">
-                                                <p className="text-xs text-gray-500 mb-2">Allowed Traffic Sources:</p>
-                                                <div className="flex flex-wrap gap-1">
-                                                    {offer.traffic_sources.map((source, idx) => (
-                                                        <Badge key={idx} variant="outline" className="text-xs border-white/20 text-gray-400">
-                                                            {source}
-                                                        </Badge>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        )}
-
-                                        <a
-                                            href="https://wahenoor.offer18.com/m/login"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
+                    <Card className="bg-white/5 border-white/10 backdrop-blur-sm overflow-hidden">
+                        <div className="overflow-x-auto">
+                            <table className="w-full">
+                                <thead>
+                                    <tr className="border-b border-white/10">
+                                        <th className="text-left py-4 px-6 text-sm font-semibold text-gray-400">Campaign</th>
+                                        <th className="text-left py-4 px-6 text-sm font-semibold text-gray-400">Category</th>
+                                        <th className="text-left py-4 px-6 text-sm font-semibold text-gray-400">Payout</th>
+                                        <th className="text-left py-4 px-6 text-sm font-semibold text-gray-400">Location</th>
+                                        <th className="text-left py-4 px-6 text-sm font-semibold text-gray-400">Status</th>
+                                        <th className="text-right py-4 px-6 text-sm font-semibold text-gray-400"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {filteredOffers.map((offer, index) => (
+                                        <motion.tr
+                                            key={offer.id}
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            transition={{ duration: 0.3, delay: index * 0.02 }}
+                                            onClick={() => setSelectedOffer(offer)}
+                                            className="border-b border-white/5 hover:bg-white/5 cursor-pointer transition-colors"
                                         >
-                                            <Button className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700">
-                                                Apply Now
-                                                <ExternalLink className="w-4 h-4 ml-2" />
-                                            </Button>
-                                        </a>
-                                    </CardContent>
-                                </Card>
-                            </motion.div>
-                        ))}
-                    </div>
+                                            <td className="py-4 px-6">
+                                                <div className="flex items-center gap-3">
+                                                    {offer.campaign_logo && (
+                                                        <div className="w-10 h-10 rounded-lg overflow-hidden border border-white/20 bg-white p-1.5 flex-shrink-0">
+                                                            <img src={offer.campaign_logo} alt={offer.campaign_name} className="w-full h-full object-contain" />
+                                                        </div>
+                                                    )}
+                                                    <div>
+                                                        <p className="text-white font-medium">{offer.campaign_name}</p>
+                                                        {offer.sub_vertical && (
+                                                            <p className="text-xs text-gray-400">{offer.sub_vertical}</p>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className="py-4 px-6">
+                                                <Badge className="bg-blue-500/20 text-blue-300 border-blue-500/30">
+                                                    {offer.vertical}
+                                                </Badge>
+                                            </td>
+                                            <td className="py-4 px-6">
+                                                <p className="text-green-400 font-semibold">
+                                                    {offer.payout_type === 'revenue_share' ? (
+                                                        <>{offer.payout}%</>
+                                                    ) : (
+                                                        <>{offer.payout_currency} {offer.payout}</>
+                                                    )}
+                                                </p>
+                                                <p className="text-xs text-gray-500">
+                                                    {offer.payout_type === 'revenue_share' ? 'RevShare' : 'Fixed'}
+                                                </p>
+                                            </td>
+                                            <td className="py-4 px-6">
+                                                <div className="flex items-center gap-1.5 text-gray-300">
+                                                    <Globe className="w-3.5 h-3.5" />
+                                                    <span className="text-sm">{offer.geo || 'Global'}</span>
+                                                </div>
+                                            </td>
+                                            <td className="py-4 px-6">
+                                                <Badge className="bg-green-500/20 text-green-300 border-green-500/30">
+                                                    Active
+                                                </Badge>
+                                            </td>
+                                            <td className="py-4 px-6 text-right">
+                                                <ChevronRight className="w-5 h-5 text-gray-400 ml-auto" />
+                                            </td>
+                                        </motion.tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </Card>
                 )}
+
+                {/* Offer Detail Modal */}
+                <Dialog open={!!selectedOffer} onOpenChange={() => setSelectedOffer(null)}>
+                    <DialogContent className="bg-[#0F172A] border-white/10 text-white max-w-3xl max-h-[90vh] overflow-y-auto">
+                        {selectedOffer && (
+                            <>
+                                <DialogHeader>
+                                    <div className="flex items-start gap-4 mb-4">
+                                        {selectedOffer.campaign_logo && (
+                                            <div className="w-20 h-20 rounded-lg overflow-hidden border border-white/20 bg-white p-2 flex-shrink-0">
+                                                <img src={selectedOffer.campaign_logo} alt={selectedOffer.campaign_name} className="w-full h-full object-contain" />
+                                            </div>
+                                        )}
+                                        <div className="flex-1">
+                                            <DialogTitle className="text-2xl text-white mb-2">{selectedOffer.campaign_name}</DialogTitle>
+                                            <div className="flex flex-wrap gap-2">
+                                                <Badge className="bg-blue-500/20 text-blue-300 border-blue-500/30">
+                                                    {selectedOffer.vertical}
+                                                </Badge>
+                                                {selectedOffer.sub_vertical && (
+                                                    <Badge variant="outline" className="border-white/20 text-gray-300">
+                                                        {selectedOffer.sub_vertical}
+                                                    </Badge>
+                                                )}
+                                                <Badge className="bg-green-500/20 text-green-300 border-green-500/30">
+                                                    Active
+                                                </Badge>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </DialogHeader>
+
+                                <div className="space-y-6">
+                                    {selectedOffer.description && (
+                                        <div>
+                                            <h3 className="text-sm font-semibold text-gray-400 mb-2">Description</h3>
+                                            <p className="text-gray-300">{selectedOffer.description}</p>
+                                        </div>
+                                    )}
+
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="bg-white/5 rounded-lg p-4 border border-white/10">
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <DollarSign className="w-5 h-5 text-green-400" />
+                                                <span className="text-sm text-gray-400">Payout</span>
+                                            </div>
+                                            <p className="text-xl font-bold text-green-400">
+                                                {selectedOffer.payout_type === 'revenue_share' ? (
+                                                    <>{selectedOffer.payout}% RevShare</>
+                                                ) : (
+                                                    <>{selectedOffer.payout_currency} {selectedOffer.payout}</>
+                                                )}
+                                            </p>
+                                        </div>
+
+                                        {selectedOffer.geo && (
+                                            <div className="bg-white/5 rounded-lg p-4 border border-white/10">
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <Globe className="w-5 h-5 text-blue-400" />
+                                                    <span className="text-sm text-gray-400">Geography</span>
+                                                </div>
+                                                <p className="text-xl font-bold text-white">{selectedOffer.geo}</p>
+                                            </div>
+                                        )}
+
+                                        {selectedOffer.platform && (
+                                            <div className="bg-white/5 rounded-lg p-4 border border-white/10">
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <Smartphone className="w-5 h-5 text-purple-400" />
+                                                    <span className="text-sm text-gray-400">Platform</span>
+                                                </div>
+                                                <p className="text-xl font-bold text-white">{selectedOffer.platform}</p>
+                                            </div>
+                                        )}
+
+                                        {selectedOffer.kpi && (
+                                            <div className="bg-white/5 rounded-lg p-4 border border-white/10">
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <Target className="w-5 h-5 text-orange-400" />
+                                                    <span className="text-sm text-gray-400">KPI</span>
+                                                </div>
+                                                <p className="text-xl font-bold text-white">{selectedOffer.kpi}</p>
+                                            </div>
+                                        )}
+
+                                        {selectedOffer.daily_cap && (
+                                            <div className="bg-white/5 rounded-lg p-4 border border-white/10">
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <TrendingUp className="w-5 h-5 text-yellow-400" />
+                                                    <span className="text-sm text-gray-400">Daily Cap</span>
+                                                </div>
+                                                <p className="text-xl font-bold text-white">{selectedOffer.daily_cap}</p>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {selectedOffer.traffic_sources && selectedOffer.traffic_sources.length > 0 && (
+                                        <div>
+                                            <h3 className="text-sm font-semibold text-gray-400 mb-3">Allowed Traffic Sources</h3>
+                                            <div className="flex flex-wrap gap-2">
+                                                {selectedOffer.traffic_sources.map((source, idx) => (
+                                                    <Badge key={idx} variant="outline" className="border-white/20 text-gray-300">
+                                                        {source}
+                                                    </Badge>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    <a
+                                        href="https://wahenoor.offer18.com/m/login"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="block"
+                                    >
+                                        <Button className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 py-6 text-lg">
+                                            Apply to This Offer
+                                            <ExternalLink className="w-5 h-5 ml-2" />
+                                        </Button>
+                                    </a>
+                                </div>
+                            </>
+                        )}
+                    </DialogContent>
+                </Dialog>
             </div>
         </div>
     );

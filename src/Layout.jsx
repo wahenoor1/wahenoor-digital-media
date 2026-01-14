@@ -20,11 +20,22 @@ export default function Layout({ children }) {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     useEffect(() => {
+        // Add Impact site verification meta tag
+        const metaTag = document.createElement('meta');
+        metaTag.name = 'impact-site-verification';
+        metaTag.setAttribute('value', 'a44316ed-db64-4dd6-8bf0-b715332e8b31');
+        document.head.insertBefore(metaTag, document.head.firstChild);
+
         const handleScroll = () => {
             setIsScrolled(window.scrollY > 50);
         };
         window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+            if (metaTag.parentNode) {
+                metaTag.parentNode.removeChild(metaTag);
+            }
+        };
     }, []);
 
     const scrollToSection = (href) => {

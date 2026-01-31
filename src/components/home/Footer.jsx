@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapPin, Phone, Mail, ExternalLink } from 'lucide-react';
+import { MapPin, Phone, Mail, ExternalLink, Heart } from 'lucide-react';
 
 const quickLinks = [
     { name: 'Advertiser', href: '#advertiser' },
@@ -120,7 +120,12 @@ export default function Footer() {
                                     info@wahenoormedia.com
                                 </a>
                             </li>
-                            <li className="pt-4 border-t border-white/10">
+                            <li className="pt-4 border-t border-white/10 space-y-3">
+                                <a href="/WishlistOffers" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-pink-500/20 to-purple-500/20 border border-pink-500/30 text-pink-300 hover:bg-pink-500/30 transition-all text-sm">
+                                    <Heart className="w-4 h-4" />
+                                    Wishlist Offers
+                                </a>
+                                <br />
                                 <a href="/AdminOffers" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 text-purple-300 hover:bg-purple-500/30 transition-all text-sm">
                                     <ExternalLink className="w-4 h-4" />
                                     Admin Login

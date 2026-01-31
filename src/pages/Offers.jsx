@@ -7,10 +7,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Search, TrendingUp, Globe, Smartphone, DollarSign, Target, ExternalLink, ChevronRight } from 'lucide-react';
+import { Search, TrendingUp, Globe, Smartphone, DollarSign, Target, ExternalLink, ChevronRight, ChevronLeft, Heart } from 'lucide-react';
 import { motion } from 'framer-motion';
+import WishlistCampaignDialog from '@/components/WishlistCampaignDialog';
 
 const verticals = ['CPL', 'CPA', 'CPS', 'CPD', 'CPM', 'Health Insurance', 'Home Improvement', 'Fintech', 'Sweepstakes', 'Crypto', 'AI'];
+const ITEMS_PER_PAGE = 50;
 
 export default function Offers() {
     const [searchTerm, setSearchTerm] = useState('');
@@ -18,6 +20,8 @@ export default function Offers() {
     const [filterGeo, setFilterGeo] = useState('all');
     const [filterPlatform, setFilterPlatform] = useState('all');
     const [selectedOffer, setSelectedOffer] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [showWishlistDialog, setShowWishlistDialog] = useState(false);
 
     const { data: offers = [], isLoading } = useQuery({
         queryKey: ['offers'],
@@ -35,6 +39,17 @@ export default function Offers() {
 
     const uniqueGeos = [...new Set(offers.map(o => o.geo).filter(Boolean))].sort();
 
+    // Pagination
+    const totalPages = Math.ceil(filteredOffers.length / ITEMS_PER_PAGE);
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    const endIndex = startIndex + ITEMS_PER_PAGE;
+    const paginatedOffers = filteredOffers.slice(startIndex, endIndex);
+
+    // Reset to page 1 when filters change
+    React.useEffect(() => {
+        setCurrentPage(1);
+    }, [searchTerm, filterVertical, filterGeo, filterPlatform]);
+
     return (
         <div className="min-h-screen bg-gradient-to-b from-[#0A1628] to-[#0F172A] py-24">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -48,9 +63,17 @@ export default function Offers() {
                         Available
                         <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"> Offers </span>
                     </h1>
-                    <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+                    <p className="text-gray-400 text-lg max-w-2xl mx-auto mb-6">
                         Browse our high-converting campaigns across all verticals
                     </p>
+                    <Button
+                        onClick={() => setShowWishlistDialog(true)}
+                        variant="outline"
+                        className="border-purple-500/50 text-purple-300 hover:bg-purple-500/10 hover:text-purple-200"
+                    >
+                        <Heart className="w-4 h-4 mr-2" />
+                        Request Custom Campaign
+                    </Button>
                 </motion.div>
 
                 {/* Filters */}
@@ -130,7 +153,7 @@ export default function Offers() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {filteredOffers.map((offer, index) => (
+                                    {paginatedOffers.map((offer, index) => (
                                         <motion.tr
                                             key={offer.id}
                                             initial={{ opacity: 0 }}
@@ -191,6 +214,65 @@ export default function Offers() {
                             </table>
                         </div>
                     </Card>
+                )}
+
+                {/* Pagination */}
+                {!isLoading && filteredOffers.length > 0 && totalPages > 1 && (
+                    <div className="flex items-center justify-between mt-6">
+                        <p className="text-sm text-gray-400">
+                            Showing {startIndex + 1} to {Math.min(endIndex, filteredOffers.length)} of {filteredOffers.length} offers
+                        </p>
+                        <div className="flex items-center gap-2">
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                                disabled={currentPage === 1}
+                                className="border-white/20 text-white hover:bg-white/10"
+                            >
+                                <ChevronLeft className="w-4 h-4" />
+                                Previous
+                            </Button>
+                            <div className="flex items-center gap-1">
+                                {[...Array(totalPages)].map((_, i) => {
+                                    const pageNum = i + 1;
+                                    if (
+                                        pageNum === 1 ||
+                                        pageNum === totalPages ||
+                                        (pageNum >= currentPage - 1 && pageNum <= currentPage + 1)
+                                    ) {
+                                        return (
+                                            <Button
+                                                key={pageNum}
+                                                variant={currentPage === pageNum ? "default" : "outline"}
+                                                size="sm"
+                                                onClick={() => setCurrentPage(pageNum)}
+                                                className={currentPage === pageNum 
+                                                    ? "bg-blue-600 hover:bg-blue-700" 
+                                                    : "border-white/20 text-white hover:bg-white/10"
+                                                }
+                                            >
+                                                {pageNum}
+                                            </Button>
+                                        );
+                                    } else if (pageNum === currentPage - 2 || pageNum === currentPage + 2) {
+                                        return <span key={pageNum} className="text-gray-400">...</span>;
+                                    }
+                                    return null;
+                                })}
+                            </div>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                                disabled={currentPage === totalPages}
+                                className="border-white/20 text-white hover:bg-white/10"
+                            >
+                                Next
+                                <ChevronRight className="w-4 h-4" />
+                            </Button>
+                        </div>
+                    </div>
                 )}
 
                 {/* Offer Detail Modal */}
@@ -317,6 +399,12 @@ export default function Offers() {
                         )}
                     </DialogContent>
                 </Dialog>
+
+                {/* Wishlist Campaign Dialog */}
+                <WishlistCampaignDialog 
+                    open={showWishlistDialog} 
+                    onOpenChange={setShowWishlistDialog}
+                />
             </div>
         </div>
     );

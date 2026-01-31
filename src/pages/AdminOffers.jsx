@@ -12,8 +12,6 @@ import { Plus, X, Pencil, Trash2, Search, TrendingUp, Upload } from 'lucide-reac
 import { toast } from 'sonner';
 import AdminGuard from '@/components/admin/AdminGuard';
 
-const verticals = ['CPL', 'CPA', 'CPS', 'CPD', 'CPM', 'Health Insurance', 'Home Improvement', 'Fintech', 'Sweepstakes', 'Crypto', 'AI'];
-
 export default function AdminOffers() {
     return (
         <AdminGuard>
@@ -50,6 +48,11 @@ function AdminOffersContent() {
     const { data: offers = [], isLoading } = useQuery({
         queryKey: ['offers'],
         queryFn: () => base44.entities.Offer.list('-created_date'),
+    });
+
+    const { data: categories = [] } = useQuery({
+        queryKey: ['categories'],
+        queryFn: () => base44.entities.Category.filter({ status: 'active' }),
     });
 
     const createMutation = useMutation({
@@ -218,8 +221,8 @@ function AdminOffersContent() {
                                                 <SelectValue placeholder="Select vertical" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                {verticals.map(v => (
-                                                    <SelectItem key={v} value={v}>{v}</SelectItem>
+                                                {categories.map(cat => (
+                                                    <SelectItem key={cat.id} value={cat.name}>{cat.name}</SelectItem>
                                                 ))}
                                             </SelectContent>
                                         </Select>
@@ -424,8 +427,8 @@ function AdminOffersContent() {
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="all">All Verticals</SelectItem>
-                                    {verticals.map(v => (
-                                        <SelectItem key={v} value={v}>{v}</SelectItem>
+                                    {categories.map(cat => (
+                                        <SelectItem key={cat.id} value={cat.name}>{cat.name}</SelectItem>
                                     ))}
                                 </SelectContent>
                             </Select>

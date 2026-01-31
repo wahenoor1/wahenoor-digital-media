@@ -11,8 +11,6 @@ import { Search, Heart, Globe, DollarSign, Target, ChevronRight } from 'lucide-r
 import { motion } from 'framer-motion';
 import WishlistCampaignDialog from '@/components/WishlistCampaignDialog';
 
-const verticals = ['CPL', 'CPA', 'CPS', 'CPD', 'CPM', 'Health Insurance', 'Home Improvement', 'Fintech', 'Sweepstakes', 'Crypto', 'AI'];
-
 export default function WishlistOffers() {
     const [searchTerm, setSearchTerm] = useState('');
     const [filterVertical, setFilterVertical] = useState('all');
@@ -22,6 +20,11 @@ export default function WishlistOffers() {
     const { data: offers = [], isLoading } = useQuery({
         queryKey: ['wishlist-offers'],
         queryFn: () => base44.entities.WishlistOffer.filter({ status: 'active' }, '-created_date'),
+    });
+
+    const { data: categories = [] } = useQuery({
+        queryKey: ['categories'],
+        queryFn: () => base44.entities.Category.filter({ status: 'active' }),
     });
 
     const filteredOffers = offers.filter(offer => {
@@ -77,8 +80,8 @@ export default function WishlistOffers() {
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="all">All Verticals</SelectItem>
-                                        {verticals.map(v => (
-                                            <SelectItem key={v} value={v}>{v}</SelectItem>
+                                        {categories.map(cat => (
+                                            <SelectItem key={cat.id} value={cat.name}>{cat.name}</SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>

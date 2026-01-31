@@ -14,8 +14,6 @@ import { toast } from 'sonner';
 import { format } from 'date-fns';
 import AdminGuard from '@/components/admin/AdminGuard';
 
-const verticals = ['CPL', 'CPA', 'CPS', 'CPD', 'CPM', 'Health Insurance', 'Home Improvement', 'Fintech', 'Sweepstakes', 'Crypto', 'AI'];
-
 export default function AdminWishlist() {
     return (
         <AdminGuard>
@@ -56,6 +54,11 @@ function AdminWishlistContent() {
     const { data: wishlistOffers = [], isLoading: loadingOffers } = useQuery({
         queryKey: ['wishlist-offers'],
         queryFn: () => base44.entities.WishlistOffer.list('-created_date'),
+    });
+
+    const { data: categories = [] } = useQuery({
+        queryKey: ['categories'],
+        queryFn: () => base44.entities.Category.filter({ status: 'active' }),
     });
 
     const updateRequestMutation = useMutation({
@@ -282,8 +285,8 @@ function AdminWishlistContent() {
                                                 <SelectValue placeholder="Select vertical" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                {verticals.map(v => (
-                                                    <SelectItem key={v} value={v}>{v}</SelectItem>
+                                                {categories.map(cat => (
+                                                    <SelectItem key={cat.id} value={cat.name}>{cat.name}</SelectItem>
                                                 ))}
                                             </SelectContent>
                                         </Select>

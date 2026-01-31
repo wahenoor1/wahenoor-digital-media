@@ -11,7 +11,6 @@ import { Search, TrendingUp, Globe, Smartphone, DollarSign, Target, ExternalLink
 import { motion } from 'framer-motion';
 import WishlistCampaignDialog from '@/components/WishlistCampaignDialog';
 
-const verticals = ['CPL', 'CPA', 'CPS', 'CPD', 'CPM', 'Health Insurance', 'Home Improvement', 'Fintech', 'Sweepstakes', 'Crypto', 'AI'];
 const ITEMS_PER_PAGE = 50;
 
 export default function Offers() {
@@ -26,6 +25,11 @@ export default function Offers() {
     const { data: offers = [], isLoading } = useQuery({
         queryKey: ['offers'],
         queryFn: () => base44.entities.Offer.filter({ status: 'active' }, '-created_date'),
+    });
+
+    const { data: categories = [] } = useQuery({
+        queryKey: ['categories'],
+        queryFn: () => base44.entities.Category.filter({ status: 'active' }),
     });
 
     const filteredOffers = offers.filter(offer => {
@@ -96,8 +100,8 @@ export default function Offers() {
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="all">All Verticals</SelectItem>
-                                        {verticals.map(v => (
-                                            <SelectItem key={v} value={v}>{v}</SelectItem>
+                                        {categories.map(cat => (
+                                            <SelectItem key={cat.id} value={cat.name}>{cat.name}</SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>

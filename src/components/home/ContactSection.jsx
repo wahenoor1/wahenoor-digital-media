@@ -79,6 +79,18 @@ export default function ContactSection() {
                             </div>
 
                             <div className="flex items-start gap-5">
+                                <div className="w-14 h-14 rounded-2xl bg-gradient-to-r from-blue-500 to-sky-500 flex items-center justify-center flex-shrink-0">
+                                    <Send className="w-6 h-6 text-white" />
+                                </div>
+                                <div>
+                                    <h3 className="text-xl font-semibold text-white mb-2">Telegram</h3>
+                                    <a href="https://t.me/wahenooremedia" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-blue-400 transition-colors text-lg">
+                                        @wahenooremedia
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div className="flex items-start gap-5">
                                 <div className="w-14 h-14 rounded-2xl bg-gradient-to-r from-orange-500 to-red-500 flex items-center justify-center flex-shrink-0">
                                     <Clock className="w-6 h-6 text-white" />
                                 </div>

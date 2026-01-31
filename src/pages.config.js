@@ -54,6 +54,7 @@ import Home from './pages/Home';
 import Offers from './pages/Offers';
 import AdminWishlist from './pages/AdminWishlist';
 import WishlistOffers from './pages/WishlistOffers';
+import AdminCategories from './pages/AdminCategories';
 import __Layout from './Layout.jsx';
 
 
@@ -65,6 +66,7 @@ export const PAGES = {
     "Offers": Offers,
     "AdminWishlist": AdminWishlist,
     "WishlistOffers": WishlistOffers,
+    "AdminCategories": AdminCategories,
 }
 
 export const pagesConfig = {

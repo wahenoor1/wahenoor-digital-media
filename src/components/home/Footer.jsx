@@ -126,6 +126,16 @@ export default function Footer() {
                                     Wishlist Offers
                                 </a>
                                 <br />
+                                <a
+                                    href="https://docs.google.com/spreadsheets/d/11-XvH4KL-1cfQO56A4Zzkrh8dlcj4PiuukSIE3pB9xs/edit?gid=0#gid=0"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-green-500/20 to-teal-500/20 border border-green-500/30 text-green-300 hover:bg-green-500/30 transition-all text-sm"
+                                >
+                                    <FileSpreadsheet className="w-4 h-4" />
+                                    Offer List
+                                </a>
+                                <br />
                                 <a href="/AdminOffers" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 text-purple-300 hover:bg-purple-500/30 transition-all text-sm">
                                     <ExternalLink className="w-4 h-4" />
                                     Admin Login

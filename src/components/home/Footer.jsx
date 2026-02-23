@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapPin, Phone, Mail, ExternalLink, Heart } from 'lucide-react';
+import { MapPin, Phone, Mail, ExternalLink, Heart, FileSpreadsheet } from 'lucide-react';
 
 const quickLinks = [
     { name: 'Advertiser', href: '#advertiser' },

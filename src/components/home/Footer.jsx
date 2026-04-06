@@ -127,7 +127,7 @@ export default function Footer() {
                                 </a>
                                 <br />
                                 <a
-                                    href="https://docs.google.com/spreadsheets/d/11-XvH4KL-1cfQO56A4Zzkrh8dlcj4PiuukSIE3pB9xs/edit?gid=0#gid=0"
+                                    href="https://docs.google.com/spreadsheets/d/1uip2MYvFlxP4HZE_6KjPrBfjMvZmTVJvNR2G28KtPTI/edit?gid=0#gid=0"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-green-500/20 to-teal-500/20 border border-green-500/30 text-green-300 hover:bg-green-500/30 transition-all text-sm"

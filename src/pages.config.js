@@ -55,6 +55,8 @@ import Offers from './pages/Offers';
 import AdminWishlist from './pages/AdminWishlist';
 import WishlistOffers from './pages/WishlistOffers';
 import AdminCategories from './pages/AdminCategories';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
 import __Layout from './Layout.jsx';
 
 
@@ -67,6 +69,8 @@ export const PAGES = {
     "AdminWishlist": AdminWishlist,
     "WishlistOffers": WishlistOffers,
     "AdminCategories": AdminCategories,
+    "PrivacyPolicy": PrivacyPolicy,
+    "TermsOfService": TermsOfService,
 }
 
 export const pagesConfig = {

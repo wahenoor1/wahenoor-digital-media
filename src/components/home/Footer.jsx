@@ -92,9 +92,9 @@ export default function Footer() {
                                 <div className="text-gray-400 text-sm space-y-3">
                                     <div>
                                         <p className="text-blue-300 font-medium mb-1">India</p>
-                                        <p>564, New Gobind Nagar,<br />
-                                        Chaura Bazar, Sultanwind Road,<br />
-                                        Amritsar, Punjab</p>
+                                        <p>L2/761 New Gurnam Nagar,<br />
+                                        Sultanwind Road,<br />
+                                        Amritsar 143001, Punjab</p>
                                     </div>
                                     <div>
                                         <p className="text-blue-300 font-medium mb-1">USA</p>

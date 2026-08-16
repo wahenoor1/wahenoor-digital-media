@@ -1,0 +1,70 @@
+{
+  "name": "WishlistOffer",
+  "type": "object",
+  "properties": {
+    "campaign_name": {
+      "type": "string",
+      "description": "Name of the wishlist campaign"
+    },
+    "campaign_logo": {
+      "type": "string",
+      "description": "URL of the campaign logo"
+    },
+    "vertical": {
+      "type": "string",
+      "description": "Campaign vertical"
+    },
+    "sub_vertical": {
+      "type": "string",
+      "description": "Sub vertical"
+    },
+    "target_geo": {
+      "type": "string",
+      "description": "Target geography"
+    },
+    "payout_type": {
+      "type": "string",
+      "enum": [
+        "fixed",
+        "revenue_share"
+      ],
+      "default": "fixed",
+      "description": "Type of payout"
+    },
+    "payout": {
+      "type": "number",
+      "description": "Payout amount or percentage"
+    },
+    "payout_currency": {
+      "type": "string",
+      "enum": [
+        "INR",
+        "USD",
+        "EUR"
+      ],
+      "default": "INR",
+      "description": "Currency for payout"
+    },
+    "description": {
+      "type": "string",
+      "description": "Campaign description"
+    },
+    "requirements": {
+      "type": "string",
+      "description": "Special requirements or notes"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive"
+      ],
+      "default": "active",
+      "description": "Offer status"
+    }
+  },
+  "required": [
+    "campaign_name",
+    "vertical"
+  ]
+}

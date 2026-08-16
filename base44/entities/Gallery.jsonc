@@ -1,0 +1,44 @@
+{
+  "name": "Gallery",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Title of the event"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description of the event"
+    },
+    "images": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 10,
+      "description": "Array of image URLs (up to 10 images per event)"
+    },
+    "event_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of the event"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "conference",
+        "meetup",
+        "workshop",
+        "award",
+        "networking",
+        "other"
+      ],
+      "default": "other",
+      "description": "Category of the event"
+    }
+  },
+  "required": [
+    "title",
+    "images"
+  ]
+}

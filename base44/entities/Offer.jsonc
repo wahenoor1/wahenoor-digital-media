@@ -1,0 +1,93 @@
+{
+  "name": "Offer",
+  "type": "object",
+  "properties": {
+    "campaign_name": {
+      "type": "string",
+      "description": "Name of the campaign"
+    },
+    "campaign_logo": {
+      "type": "string",
+      "description": "URL of the campaign logo"
+    },
+    "vertical": {
+      "type": "string",
+      "description": "Main vertical category"
+    },
+    "sub_vertical": {
+      "type": "string",
+      "description": "Sub category within the vertical"
+    },
+    "geo": {
+      "type": "string",
+      "description": "Target geography (e.g., India, USA, Global)"
+    },
+    "kpi": {
+      "type": "string",
+      "description": "Key Performance Indicator"
+    },
+    "payout_type": {
+      "type": "string",
+      "enum": [
+        "fixed",
+        "revenue_share"
+      ],
+      "default": "fixed",
+      "description": "Type of payout - fixed amount or revenue share percentage"
+    },
+    "payout": {
+      "type": "number",
+      "description": "Payout amount or percentage"
+    },
+    "payout_currency": {
+      "type": "string",
+      "enum": [
+        "INR",
+        "USD",
+        "EUR"
+      ],
+      "default": "INR",
+      "description": "Currency for payout (only for fixed type)"
+    },
+    "platform": {
+      "type": "string",
+      "enum": [
+        "Mobile",
+        "Web",
+        "Both"
+      ],
+      "default": "Both",
+      "description": "Platform availability"
+    },
+    "daily_cap": {
+      "type": "number",
+      "description": "Daily cap limit"
+    },
+    "traffic_sources": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Allowed traffic sources"
+    },
+    "description": {
+      "type": "string",
+      "description": "Campaign description"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "paused",
+        "ended"
+      ],
+      "default": "active",
+      "description": "Campaign status"
+    }
+  },
+  "required": [
+    "campaign_name",
+    "vertical",
+    "payout"
+  ]
+}

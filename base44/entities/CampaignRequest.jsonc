@@ -1,0 +1,69 @@
+{
+  "name": "CampaignRequest",
+  "type": "object",
+  "properties": {
+    "campaign_name": {
+      "type": "string",
+      "description": "Name of the requested campaign"
+    },
+    "vertical": {
+      "type": "string",
+      "description": "Campaign vertical/category"
+    },
+    "description": {
+      "type": "string",
+      "description": "Campaign description and requirements"
+    },
+    "target_geo": {
+      "type": "string",
+      "description": "Target geography"
+    },
+    "expected_payout": {
+      "type": "string",
+      "description": "Expected payout range"
+    },
+    "contact_name": {
+      "type": "string",
+      "description": "Contact person name"
+    },
+    "contact_email": {
+      "type": "string",
+      "description": "Contact email"
+    },
+    "contact_phone": {
+      "type": "string",
+      "description": "Contact phone/WhatsApp number"
+    },
+    "telegram_username": {
+      "type": "string",
+      "description": "Telegram username"
+    },
+    "preferred_contact": {
+      "type": "string",
+      "enum": [
+        "email",
+        "whatsapp",
+        "telegram"
+      ],
+      "default": "email",
+      "description": "Preferred contact method"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "contacted",
+        "in_progress",
+        "completed",
+        "rejected"
+      ],
+      "default": "pending",
+      "description": "Request status"
+    }
+  },
+  "required": [
+    "campaign_name",
+    "contact_name",
+    "contact_email"
+  ]
+}
